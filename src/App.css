@@ -1,0 +1,252 @@
+:root {
+  --global-font-primary: #d8cdcd;
+  --global-font-secondary: #000000;
+  --font-primary: "Aladin", Arial, sans-serif;
+  --font-secondary: "Life Savers", Arial, sans-serif;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-secondary);
+  background: url("./assets/space-bgrd.jpg") no-repeat center center fixed;
+  background-size: cover;
+  color: #432000;
+  user-select: none;
+  height: 100%;
+}
+
+/* Use safe areas for iPhones with a notch */
+#main-container {
+  margin: 0 auto;
+  margin-top: 40px;
+  padding: env(safe-area-inset);
+  max-width: 420px; /* Adjust based on your design */
+  width: 100%;
+  position: relative;
+  z-index: 3;
+}
+/* Fridge container styles */
+.fridge-container {
+  position: relative;
+  width: 290px; /* Adjust to match your fridge image dimensions */
+  height: 600px; /* Adjust as needed */
+  background: url("./assets/Fridge-Container.png") no-repeat center center;
+  background-size: cover;
+  margin: 0 auto; /* Center the fridge horizontally */
+}
+
+/* Inner rectangle to confine the inventory list */
+.inner-rect {
+  position: absolute;
+  top: 22px; /* Adjust to match the interior of your fridge image */
+  left: 30px; /* Adjust accordingly */
+  width: 226px; /* Width of the inner area */
+  height: 555px; /* Height of the inner area */
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  /* Optional border for debugging: */
+  /* border: 2px dashed rgba(255, 255, 255, 0.5); */
+  border-radius: 30px;
+}
+
+.inner-rect::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Optionally, when actively dragging set the cursor to grabbing */
+.inner-rect.active {
+  cursor: grabbing;
+}
+
+/* Inventory list (item container) styles */
+.item-container {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+.flex-item-cont {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual inventory item styling */
+.item-container li {
+  margin-bottom: 10px;
+  padding: 10px;
+  /* background: rgba(0, 0, 0, 0.5); */
+  color: var(--global-font-primary);
+  border-radius: 18px;
+  cursor: pointer;
+}
+.item-name {
+  text-align: center;
+  font-size: large;
+}
+
+.item-added {
+  font-size: 12px;
+  font-family: "Life Savers";
+  font-weight: bolder;
+}
+.item-expiration {
+  font-size: 12px;
+  font-family: "Life Savers";
+  font-weight: bolder;
+}
+
+.date-container {
+  display: flex;
+  margin-top: 5px;
+  justify-content: space-between;
+}
+
+/* Modal overlay for the add-item form */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal content styles */
+.modal-content {
+  background-image: url("./assets/phthalo_ink_green.png");
+  background-size: cover;
+  background-position: right;
+  background-color: #000000;
+  padding: 20px;
+  border-radius: 8px;
+  width: 16rem;
+  max-width: 90%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  display: flex;
+  color: var(--global-font-primary);
+  flex-direction: column;
+  font-family: "Fontdiner Swanky";
+}
+
+.modal-content h2 {
+  color: #000000;
+  background: #33333300;
+  text-shadow: 0 -1px 4px #b5e7be, 0 -2px 10px rgba(0, 255, 162, 0.516),
+    0 -10px 20px #00ff6e, 0 -18px 40px rgba(0, 255, 26, 0.489);
+}
+
+.itemInputCont {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.itemInputCont input {
+  text-align: center;
+  color: var(--global-font-primary);
+  background-color: #000000;
+  border-radius: 6px;
+  border-color: rgb(150, 222, 148);
+  -webkit-box-shadow: 5px 5px 15px 5px #000000;
+  box-shadow: 2px 2px 8px 4px #000000;
+  font-family: var(--font-secondary);
+  font-weight: bolder;
+}
+#itemNameTextInput::placeholder {
+  color: var(--global-font-primary);
+}
+
+.itemInputCont select {
+  text-align: center;
+  background-color: #000000;
+  color: var(--global-font-primary);
+  border-radius: 6px;
+  border-color: #96de94;
+  -webkit-box-shadow: 5px 5px 15px 5px #000000;
+  box-shadow: 2px 2px 8px 4px #000000;
+  font-family: var(--font-secondary);
+  font-weight: bolder;
+}
+.itemInputCont span {
+  font-size: 12px;
+}
+
+.modalBtnCont {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 2px;
+  margin-top: 10px;
+  justify-content: space-around;
+}
+.modalBtnCont button {
+  color: var(--global-font-primary);
+  font-family: var(--font-primary);
+  font-size: larger;
+  width: 32%;
+  border-radius: 50%;
+  padding: 10px;
+  -webkit-box-shadow: 5px 5px 15px 5px #000000;
+  box-shadow: 5px 5px 15px 5px #000000;
+  background-image: url(./assets/phthalo_ink_green.png);
+}
+#addItemBtn {
+  text-shadow: 2px 2px 2px #765b5b;
+}
+#addItemBtn:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+#deleteText {
+  color: #000000;
+  background: #33333300;
+  text-shadow: 0 -1px 4px #b5e7be, 0 -2px 10px rgba(0, 255, 162, 0.516),
+    0 -10px 20px #00ff6e, 0 -18px 40px rgba(0, 255, 26, 0.489);
+}
+#deleteConfirmBtn {
+  color: red;
+}
+
+#cancelAddBtn {
+  /* background-image: url(./assets/phthalo_ink_red.png);
+  background-size: fit;
+  background-position: 320px 220px; */
+  text-shadow: 2px 2px 2px #180a06;
+  color: red;
+}
+
+#cancelItemBtn:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+/* Button to open the modal form */
+#open-form-button {
+  position: fixed;
+  bottom: 22px;
+  right: 27px;
+  font-size: 1.3rem;
+  background: #1a1a1a;
+  color: var(--global-font-primary);
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#open-form-button:hover {
+  background: #333;
+}
