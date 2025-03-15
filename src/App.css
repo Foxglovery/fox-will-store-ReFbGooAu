@@ -35,6 +35,14 @@ body {
   background-size: cover;
   margin: 0 auto; /* Center the fridge horizontally */
 }
+.white-frame-container {
+  position: relative;
+  width: 290px; /* Adjust to match your fridge image dimensions */
+  height: 600px; /* Adjust as needed */
+  background: url("./assets/frame-white.PNG") no-repeat center center;
+  background-size: cover;
+  margin: 0 auto; /* Center the fridge horizontally */
+}
 
 /* Inner rectangle to confine the inventory list */
 .inner-rect {
