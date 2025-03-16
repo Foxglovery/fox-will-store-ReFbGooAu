@@ -10,7 +10,7 @@ const tabIdToURL = {
 };
 
 const Login = (props) => {
-  // getting and setting URL params
+  // getting and setting URL paramss
   const [searchParams, setSearchParams] = useSearchParams();
 
   // get action from URL
