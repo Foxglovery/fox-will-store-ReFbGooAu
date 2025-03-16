@@ -36,21 +36,34 @@ body {
   margin: 0 auto; /* Center the fridge horizontally */
 }
 .white-frame-container {
-  position: relative;
-  width: 290px; /* Adjust to match your fridge image dimensions */
-  height: 600px; /* Adjust as needed */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; /* Adjust if needed, or use fixed pixel dimensions */
+  height: 100%; /* Adjust if needed */
   background: url("./assets/frame-white.PNG") no-repeat center center;
   background-size: cover;
-  margin: 0 auto; /* Center the fridge horizontally */
+  z-index: 2; /* Make sure this is higher than any overlapping elements */
+  pointer-events: none;
 }
+
+/* .white-frame-container {
+  position: relative;
+  width: 290px; /* Adjust to match your fridge image dimensions */
+/* height: 600px; Adjust as needed */
+/* background: url("./assets/frame-white.PNG") no-repeat center center; */
+/* background-size: cover; */
+/* margin: 0 auto; Center the fridge horizontally */
+/* } */
 
 /* Inner rectangle to confine the inventory list */
 .inner-rect {
-  position: absolute;
-  top: 22px; /* Adjust to match the interior of your fridge image */
-  left: 30px; /* Adjust accordingly */
-  width: 226px; /* Width of the inner area */
-  height: 555px; /* Height of the inner area */
+  position: relative;
+  z-index: 1;
+  top: 70px; /* Adjust to match the interior of your fridge image */
+  left: 42px; /* Adjust accordingly */
+  width: 206px; /* Width of the inner area */
+  height: 460px; /* Height of the inner area */
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -58,6 +71,7 @@ body {
   /* Optional border for debugging: */
   /* border: 2px dashed rgba(255, 255, 255, 0.5); */
   border-radius: 30px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .inner-rect::-webkit-scrollbar {
@@ -88,6 +102,7 @@ body {
   color: var(--global-font-primary);
   border-radius: 18px;
   cursor: pointer;
+  transition: transform 0.2s ease-out;
 }
 .item-name {
   text-align: center;

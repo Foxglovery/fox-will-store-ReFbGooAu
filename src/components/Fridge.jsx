@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { getDatabase, ref, push, onValue, remove } from "firebase/database";
 import { Firebase } from '../config/firebase';
 import InventoryItem from './InventoryItems';
@@ -20,8 +20,94 @@ function Fridge() {
     // State for deletion confirmation modal
     const [itemToDelete, setItemToDelete] = useState(null);
   
+    //Endless Scroll
+    
+  const innerRectRef = useRef(null);
+  const firstListRef = useRef(null);
+  const [contentHeight, setContentHeight] = useState(0);
+
+  // Refs for touch dragging
+  const isDragging = useRef(false);
+  const startY = useRef(0);
+  const initialScrollTop = useRef(0);
+
+  // Function to update transforms for the water wheel effect
+  const updateTransforms = () => {
+    const container = innerRectRef.current;
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const containerCenter = containerRect.top + containerRect.height / 2;
+    const items = container.querySelectorAll('.item-container li');
+
+    items.forEach((item) => {
+      const itemRect = item.getBoundingClientRect();
+      const itemCenter = itemRect.top + itemRect.height / 2;
+      const distanceFromCenter = itemCenter - containerCenter;
+      const maxDistance = containerRect.height / 2;
+      const normalized = distanceFromCenter / maxDistance;
+
+      const maxAngle = 30; // Maximum rotation angle in degrees
+      const angle = normalized * maxAngle;
+      // Scale from 1 (center) down to 0.5 at the edges.
+      const scale = 1 - Math.min(Math.abs(normalized) * 0.5, 0.5);
+
+      item.style.transform = `perspective(500px) rotateX(${angle}deg) scale(${scale})`;
+    });
+  };
+
+  // Handle the infinite/repeating list logic on scroll
+  const handleScroll = (e) => {
+    const { scrollTop } = e.target;
+    if (contentHeight > 0) {
+      if (scrollTop >= contentHeight) {
+        e.target.scrollTop = scrollTop - contentHeight;
+      } else if (scrollTop === 0) {
+        e.target.scrollTop = contentHeight;
+      }
+      updateTransforms();
+    }
+  };
+
+  // Touch event handlers for dragging
+  const handleTouchStart = (e) => {
+    isDragging.current = true;
+    startY.current = e.touches[0].clientY;
+    if (innerRectRef.current) {
+      initialScrollTop.current = innerRectRef.current.scrollTop;
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging.current) return;
+    const currentY = e.touches[0].clientY;
+    const deltaY = startY.current - currentY;
+    if (innerRectRef.current) {
+      innerRectRef.current.scrollTop = initialScrollTop.current + deltaY;
+      updateTransforms();
+    }
+  };
+
+  const handleTouchEnd = () => {
+    isDragging.current = false;
+  };
+
+  // Measure the height of the first list copy for infinite scrolling
+  useEffect(() => {
+    if (firstListRef.current) {
+      setContentHeight(firstListRef.current.offsetHeight);
+    }
+  }, [inventory]);
+
+  // Run on initial mount to set the transforms.
+  useEffect(() => {
+    updateTransforms();
+  }, []);
+
+
     // Listen for inventory updates
     useEffect(() => {
+      
       const inventoryRef = ref(database, "inventory");
       onValue(inventoryRef, (snapshot) => {
         const data = snapshot.val();
@@ -100,9 +186,17 @@ function Fridge() {
   
     return (
       <div id="main-container">
-        <div className="fridge-container">
-          <div className="inner-rect">
-            <div className="flex-item-cont" style={{ width: "100%" }}>
+      <div className="fridge-container">
+        <div
+          className="inner-rect"
+          ref={innerRectRef}
+          onScroll={handleScroll}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="scrolling-content">
+            <div ref={firstListRef}>
               <ul className="item-container">
                 {inventory.map((item) => (
                   <InventoryItem
@@ -114,8 +208,25 @@ function Fridge() {
                 ))}
               </ul>
             </div>
+            {/* Duplicate the list for a seamless repeat */}
+            <div>
+              <ul className="item-container">
+                {inventory.map((item) => (
+                  <InventoryItem
+                    key={`dup-${item.id}`}
+                    item={item}
+                    categories={categories}
+                    removeItem={confirmDelete}
+                  />
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
+        {/* White frame overlay with pointer events disabled */}
+        <div className="white-frame-container" style={{ pointerEvents: 'none' }}></div>
+      </div>
+
   
         <button
           id="open-form-button"
